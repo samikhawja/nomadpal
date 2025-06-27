@@ -34,6 +34,7 @@ const ProfilePage: React.FC = () => {
     phone: user ? user.phone || '' : '',
     tiktok: user ? user.tiktok || '' : '',
     whatsapp: user ? user.whatsapp || '' : '',
+    name: user ? user.name || '' : '',
   });
 
   useEffect(() => {
@@ -48,6 +49,7 @@ const ProfilePage: React.FC = () => {
         phone: user.phone || '',
         tiktok: user.tiktok || '',
         whatsapp: user.whatsapp || '',
+        name: user.name || '',
       });
     }
   }, [user]);
@@ -78,6 +80,7 @@ const ProfilePage: React.FC = () => {
       phone: user ? user.phone || '' : '',
       tiktok: user ? user.tiktok || '' : '',
       whatsapp: user ? user.whatsapp || '' : '',
+      name: user ? user.name || '' : '',
     });
     setIsEditing(false);
   };
@@ -250,6 +253,17 @@ const ProfilePage: React.FC = () => {
             <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
               <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editForm.name || ''}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Full Name"
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
                   <input
