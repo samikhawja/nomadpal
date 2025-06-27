@@ -19,7 +19,7 @@ const Header: React.FC = () => {
     { name: 'Home', href: '/' },
     { name: 'Feed', href: '/feed' },
     { name: 'Trust', href: '/trust' },
-    { name: 'Madi, your AI powered Assistant', href: '/concierge' },
+    { name: 'Madi, your AI powered Assistant', href: '/concierge', special: true },
   ];
 
   const popularLocations = [
@@ -53,17 +53,26 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  location.pathname === item.href
-                    ? 'text-blue-600 bg-blue-50'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                }`}
-              >
-                {item.name}
-              </Link>
+              item.special ? (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`px-3 py-2 rounded-lg font-medium flex items-center gap-2 transition-all duration-200 ml-2 border border-blue-400 bg-blue-50 shadow-sm whitespace-nowrap hover:bg-blue-100 hover:border-blue-500`}
+                  style={{ fontSize: '1rem', fontWeight: 500, letterSpacing: '0.01em' }}
+                >
+                  <span className="inline-flex items-center bg-gradient-to-r from-blue-500 via-sky-400 to-pink-400 bg-clip-text text-transparent">
+                    {item.name}
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${location.pathname === item.href ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'}`}
+                >
+                  {item.name}
+                </Link>
+              )
             ))}
           </nav>
 
