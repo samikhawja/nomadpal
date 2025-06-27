@@ -21,8 +21,8 @@ const HomePage: React.FC = () => {
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: 'AI Concierge',
-      description: 'Smart planning assistance for routes, bookings, and spontaneous adventures.'
+      title: 'Madi, your AI powered Assistant',
+      description: 'Smart, AI-powered travel planning and real-time help for your adventures.'
     },
     {
       icon: <MessageCircle className="w-6 h-6" />,
@@ -130,9 +130,10 @@ const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose NomadPal?
+              Why Choose Madi, your AI powered Assistant?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              We're building the world's most trusted travel community, powered by real people and Madi, your AI powered Assistant.
               We're building the world's most trusted travel community, powered by real people and AI assistance.
             </p>
           </div>

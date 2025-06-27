@@ -39,7 +39,7 @@ const ConciergePage: React.FC = () => {
     {
       id: '1',
       type: 'ai',
-      content: `Hi! I'm your NomadPal AI concierge. I can help you plan your trip in ${currentLocation}, find local guides, book transportation, and answer any travel questions. What would you like to know?`,
+      content: `Hi! I'm Madi, your AI powered Assistant. I can help you plan your trip in ${currentLocation}, find local guides, book transportation, and answer any travel questions. What would you like to know?`,
       timestamp: new Date().toISOString()
     }
   ]);
@@ -142,7 +142,7 @@ const ConciergePage: React.FC = () => {
                 <span className="text-white font-bold text-lg">AI</span>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 text-lg">NomadPal Assistant</h3>
+                <h3 className="font-semibold text-gray-900 text-lg">Madi, your AI powered Assistant</h3>
                 <p className="text-sm text-gray-500">Online • Ready to help</p>
               </div>
             </div>

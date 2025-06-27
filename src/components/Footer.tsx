@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/concierge" className="text-gray-300 hover:text-white transition-colors">
-                  AI Concierge
+                  Madi, your AI powered Assistant
                 </Link>
               </li>
               <li>

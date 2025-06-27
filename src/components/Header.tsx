@@ -19,7 +19,7 @@ const Header: React.FC = () => {
     { name: 'Home', href: '/' },
     { name: 'Feed', href: '/feed' },
     { name: 'Trust', href: '/trust' },
-    { name: 'Concierge', href: '/concierge' },
+    { name: 'Madi, your AI powered Assistant', href: '/concierge' },
   ];
 
   const popularLocations = [

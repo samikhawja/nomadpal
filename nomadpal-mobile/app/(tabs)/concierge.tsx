@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatLi
 import { Ionicons } from '@expo/vector-icons';
 
 const initialChat = [
-  { id: '1', type: 'ai', content: "Hi! I'm your NomadPal AI concierge. How can I help you plan your trip today?" }
+  { id: '1', type: 'ai', content: "Hi! I'm Madi, your AI powered Assistant. How can I help you plan your trip today?" }
 ];
 
 const quickActions = [
@@ -31,7 +31,7 @@ export default function ConciergeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>AI Concierge</Text>
+      <Text style={styles.title}>Madi, your AI powered Assistant</Text>
       <FlatList
         data={chat}
         keyExtractor={item => item.id}
