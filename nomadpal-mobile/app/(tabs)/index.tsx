@@ -3,9 +3,11 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useNomad } from '../context/NomadContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const { state } = useNomad();
+  const router = useRouter();
 
   const features = [
     {
@@ -77,6 +79,19 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      <TouchableOpacity
+        style={{ alignSelf: 'center', marginVertical: 24, backgroundColor: '#2563eb', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 }}
+        onPress={() => {
+          if (state.currentUser) {
+            router.push(`/${state.currentUser.name}`);
+          } else {
+            router.push('/signin');
+          }
+        }}
+      >
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>My Profile</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
