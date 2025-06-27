@@ -2,6 +2,7 @@
   "users": [
     {
         "id": "user1",
+        "name": "Sami Khawja",
         "username": "sami",
         "email": "Sami@nomadpal.com",
         "avatar": "/data/IMG_3244.JPG",
@@ -31,6 +32,7 @@
     },
     {
       "id": "user2",
+      "name": "Zoe Greiff",
       "username": "zoe",
       "email": "zoe@nomadpal.com",
       "avatar": "data/IMG_2489.JPG",
@@ -54,7 +56,8 @@
           "comment": "Zoe was incredibly helpful with transportation tips in Bali.",
           "createdAt": "2024-01-08"
         }
-      ]
+      ],
+      "bio": "World traveler and explorer."
     },
     {
       "id": "user3",
