@@ -155,7 +155,7 @@ const Header: React.FC = () => {
                         onClick={() => {
                           setIsUserDropdownOpen(false);
                           dispatch(signOut());
-                          navigate('/');
+                          navigate(location.pathname);
                         }}
                       >
                         Sign Out
@@ -165,7 +165,7 @@ const Header: React.FC = () => {
                 )}
               </div>
             ) : (
-              <Link to="/signin" className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              <Link to="/signin" state={{ from: location.pathname }} className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
                 <User className="w-4 h-4" />
                 <span className="text-sm font-medium">Sign In</span>
               </Link>

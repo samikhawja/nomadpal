@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Edit, Star, MapPin, Calendar, Award, MessageCircle, Settings } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { setUser } from '../slices/userSlice';
 
 const ProfilePage: React.FC = () => {
@@ -11,6 +11,7 @@ const ProfilePage: React.FC = () => {
   const users = useSelector((state: RootState) => state.user.users);
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   // If the username in the URL matches the logged-in user, use currentUser
@@ -141,10 +142,21 @@ const ProfilePage: React.FC = () => {
                 <span>Edit Profile</span>
               </button>
             )}
-            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              <MessageCircle className="w-4 h-4" />
-              <span>Message</span>
-            </button>
+            {!(currentUser && user.username?.toLowerCase() === currentUser.username?.toLowerCase()) && (
+              <button
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={() => {
+                  if (!currentUser) {
+                    navigate('/signin', { state: { from: location.pathname } });
+                  } else {
+                    // Future: open message modal or chat
+                  }
+                }}
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Message</span>
+              </button>
+            )}
           </div>
         </div>
 

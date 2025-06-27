@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { setUser, signOut } from '../slices/userSlice';
@@ -12,12 +12,14 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (currentUser) {
-      navigate(`/${currentUser.username}`);
+      const from = (location.state && (location.state as any).from) || '/';
+      navigate(from, { replace: true });
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, location.state]);
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +32,6 @@ export default function SignInPage() {
     if (user && password === user.password) {
       dispatch(setUser(user));
       setError('');
-      navigate('/');
     } else {
       setError('Invalid credentials. Try demo user or any user name.');
       dispatch(signOut());
@@ -41,7 +42,6 @@ export default function SignInPage() {
     const user = users[0];
     dispatch(setUser(user));
     setError('');
-    navigate('/');
   };
 
   return (
