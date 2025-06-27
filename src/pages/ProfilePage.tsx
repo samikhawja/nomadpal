@@ -27,7 +27,13 @@ const ProfilePage: React.FC = () => {
   const [editForm, setEditForm] = useState({
     username: user ? user.username || '' : '',
     location: user ? user.location || '' : '',
-    bio: user ? user.bio || '' : ''
+    bio: user ? user.bio || '' : '',
+    instagram: user ? user.instagram || '' : '',
+    facebook: user ? user.facebook || '' : '',
+    snapchat: user ? user.snapchat || '' : '',
+    phone: user ? user.phone || '' : '',
+    tiktok: user ? user.tiktok || '' : '',
+    whatsapp: user ? user.whatsapp || '' : '',
   });
 
   useEffect(() => {
@@ -35,7 +41,13 @@ const ProfilePage: React.FC = () => {
       setEditForm({
         username: user.username || '',
         location: user.location || '',
-        bio: user.bio || ''
+        bio: user.bio || '',
+        instagram: user.instagram || '',
+        facebook: user.facebook || '',
+        snapchat: user.snapchat || '',
+        phone: user.phone || '',
+        tiktok: user.tiktok || '',
+        whatsapp: user.whatsapp || '',
       });
     }
   }, [user]);
@@ -59,7 +71,13 @@ const ProfilePage: React.FC = () => {
     setEditForm({
       username: user ? user.username || '' : '',
       location: user ? user.location || '' : '',
-      bio: user ? user.bio || '' : ''
+      bio: user ? user.bio || '' : '',
+      instagram: user ? user.instagram || '' : '',
+      facebook: user ? user.facebook || '' : '',
+      snapchat: user ? user.snapchat || '' : '',
+      phone: user ? user.phone || '' : '',
+      tiktok: user ? user.tiktok || '' : '',
+      whatsapp: user ? user.whatsapp || '' : '',
     });
     setIsEditing(false);
   };
@@ -118,6 +136,40 @@ const ProfilePage: React.FC = () => {
                 )}
               </div>
               <div className="text-md text-gray-400 font-normal mb-1 -mt-1">@{user.username}</div>
+              {(user.instagram || user.facebook || user.snapchat || user.phone || user.tiktok || user.whatsapp) && (
+                <div className="flex items-center space-x-3 mb-1">
+                  {user.instagram && (
+                    <a href={`https://instagram.com/${user.instagram}`} target="_blank" rel="noopener noreferrer" title="Instagram">
+                      <svg className="w-5 h-5 text-pink-500 hover:text-pink-600" fill="currentColor" viewBox="0 0 24 24"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path></svg>
+                    </a>
+                  )}
+                  {user.facebook && (
+                    <a href={`https://facebook.com/${user.facebook}`} target="_blank" rel="noopener noreferrer" title="Facebook">
+                      <svg className="w-5 h-5 text-blue-600 hover:text-blue-700" fill="currentColor" viewBox="0 0 24 24"><path d="M17.525 8.998h-3.02V7.498c0-.583.39-.719.665-.719h2.31V3.998h-3.18c-2.25 0-2.77 1.68-2.77 2.77v2.23H7.998v3.5h2.532V20h3.5v-7.502h2.36l.375-3.5z"></path></svg>
+                    </a>
+                  )}
+                  {user.snapchat && (
+                    <a href={`https://snapchat.com/add/${user.snapchat}`} target="_blank" rel="noopener noreferrer" title="Snapchat">
+                      <svg className="w-5 h-5 text-yellow-400 hover:text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm0 1.5a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17zm0 2.25c-1.38 0-2.5 1.12-2.5 2.5 0 .828.672 1.5 1.5 1.5h2c.828 0 1.5-.672 1.5-1.5 0-1.38-1.12-2.5-2.5-2.5zm0 10.25c-2.485 0-4.5-2.015-4.5-4.5h1.5a3 3 0 0 0 6 0h1.5c0 2.485-2.015 4.5-4.5 4.5zm0 2.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"></path></svg>
+                    </a>
+                  )}
+                  {user.tiktok && (
+                    <a href={`https://tiktok.com/@${user.tiktok}`} target="_blank" rel="noopener noreferrer" title="TikTok">
+                      <svg className="w-5 h-5 text-black hover:text-gray-700" fill="currentColor" viewBox="0 0 24 24"><path d="M12.004 2c2.21 0 4.004 1.794 4.004 4.004v7.992c0 2.21-1.794 4.004-4.004 4.004s-4.004-1.794-4.004-4.004c0-2.21 1.794-4.004 4.004-4.004.552 0 1 .448 1 1s-.448 1-1 1a2.003 2.003 0 1 0 2.003 2.003V6.004A2.003 2.003 0 0 0 12.004 4a2.003 2.003 0 0 0-2.003 2.003c0 .552-.448 1-1 1s-1-.448-1-1A4.004 4.004 0 0 1 12.004 2z"></path></svg>
+                    </a>
+                  )}
+                  {user.whatsapp && (
+                    <a href={`https://wa.me/${user.whatsapp.replace(/[^\d]/g, '')}`} target="_blank" rel="noopener noreferrer" title="WhatsApp">
+                      <svg className="w-5 h-5 text-green-600 hover:text-green-700" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.031-.967-.273-.099-.472-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.007-.372-.009-.571-.009-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.366.71.306 1.263.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347zM12.004 2C6.477 2 2 6.477 2 12c0 1.989.521 3.889 1.514 5.563L2 22l4.594-1.497A9.953 9.953 0 0 0 12.004 22c5.523 0 10-4.477 10-10s-4.477-10-10-10z"></path></svg>
+                    </a>
+                  )}
+                  {user.phone && (
+                    <a href={`tel:${user.phone}`} title="Phone">
+                      <svg className="w-5 h-5 text-green-500 hover:text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1.003 1.003 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.07 21 3 13.93 3 5c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.46.57 3.58.13.34.04.73-.24 1.01l-2.2 2.2z"></path></svg>
+                    </a>
+                  )}
+                </div>
+              )}
               <div className="flex items-center space-x-4 text-gray-600 mb-2">
                 <div className="flex items-center space-x-1">
                   <MapPin className="w-4 h-4" />
@@ -226,6 +278,72 @@ const ProfilePage: React.FC = () => {
                     onChange={handleEditChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     rows={3}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Instagram Username</label>
+                  <input
+                    type="text"
+                    name="instagram"
+                    value={editForm.instagram}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="@instagram"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Facebook Username</label>
+                  <input
+                    type="text"
+                    name="facebook"
+                    value={editForm.facebook}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="@facebook"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Snapchat Username</label>
+                  <input
+                    type="text"
+                    name="snapchat"
+                    value={editForm.snapchat}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="@snapchat"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">TikTok Username</label>
+                  <input
+                    type="text"
+                    name="tiktok"
+                    value={editForm.tiktok}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="@tiktok"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+                  <input
+                    type="text"
+                    name="whatsapp"
+                    value={editForm.whatsapp}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="WhatsApp number or @username"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={editForm.phone}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Phone Number"
                   />
                 </div>
               </div>

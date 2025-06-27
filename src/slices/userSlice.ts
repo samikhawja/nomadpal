@@ -14,6 +14,12 @@ export interface User {
   password?: string;
   badges?: string[];
   bio?: string;
+  instagram?: string;
+  facebook?: string;
+  snapchat?: string;
+  phone?: string;
+  tiktok?: string;
+  whatsapp?: string;
 }
 
 interface UserState {
