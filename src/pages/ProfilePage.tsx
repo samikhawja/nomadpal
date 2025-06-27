@@ -14,6 +14,8 @@ const ProfilePage: React.FC = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [hoveredReviewerId, setHoveredReviewerId] = useState<string | null>(null);
+  const [isHoveringName, setIsHoveringName] = useState(false);
+  const [isHoveringModal, setIsHoveringModal] = useState(false);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // If the username in the URL matches the logged-in user, use currentUser
@@ -106,15 +108,16 @@ const ProfilePage: React.FC = () => {
               onError={e => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${user.username}`; }}
             />
             <div>
-              <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">{user.username}</h1>
+              <div className="flex items-center space-x-2 mb-0.5">
+                <h1 className="text-2xl font-bold text-gray-900 leading-tight">{user.name}</h1>
                 {user.verified && (
-                  <div className="flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  <div className="flex items-center px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-sm align-middle" style={{height: 'fit-content'}}>
                     <span>✓</span>
-                    <span>Verified</span>
+                    <span className="ml-1">Verified</span>
                   </div>
                 )}
               </div>
+              <div className="text-md text-gray-400 font-normal mb-1 -mt-1">@{user.username}</div>
               <div className="flex items-center space-x-4 text-gray-600 mb-2">
                 <div className="flex items-center space-x-1">
                   <MapPin className="w-4 h-4" />
@@ -263,12 +266,16 @@ const ProfilePage: React.FC = () => {
                             to={`/${reviewer.username?.toLowerCase()}`}
                             className="hover:underline text-blue-700"
                             onMouseEnter={() => {
+                              setIsHoveringName(true);
                               if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-                              hoverTimeout.current = setTimeout(() => setHoveredReviewerId(review.reviewerId), 500);
+                              hoverTimeout.current = setTimeout(() => setHoveredReviewerId(review.reviewerId), 300);
                             }}
                             onMouseLeave={() => {
+                              setIsHoveringName(false);
                               if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-                              setHoveredReviewerId(null);
+                              hoverTimeout.current = setTimeout(() => {
+                                if (!isHoveringModal) setHoveredReviewerId(null);
+                              }, 100);
                             }}
                           >
                             {reviewer.username}
@@ -277,12 +284,15 @@ const ProfilePage: React.FC = () => {
                             <div
                               className="absolute bottom-full left-0 mb-2 z-50 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-4 animate-fade-in flex flex-col items-center"
                               onMouseEnter={() => {
+                                setIsHoveringModal(true);
                                 if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-                                setHoveredReviewerId(review.reviewerId);
                               }}
                               onMouseLeave={() => {
+                                setIsHoveringModal(false);
                                 if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-                                setHoveredReviewerId(null);
+                                hoverTimeout.current = setTimeout(() => {
+                                  if (!isHoveringName) setHoveredReviewerId(null);
+                                }, 100);
                               }}
                             >
                               <img
@@ -291,8 +301,16 @@ const ProfilePage: React.FC = () => {
                                 className="w-16 h-16 rounded-full object-cover mb-2"
                                 onError={e => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${reviewer.username}`; }}
                               />
-                              <div className="font-bold text-gray-900 mb-1">{reviewer.username}</div>
-                              {reviewer.bio && <div className="text-sm text-gray-600 mb-2 text-center">{reviewer.bio}</div>}
+                              <Link
+                                to={`/${reviewer.username?.toLowerCase()}`}
+                                className="font-bold text-gray-900 text-lg mb-0 hover:underline"
+                              >
+                                {reviewer.name}
+                              </Link>
+                              <div className="text-xs text-gray-400 mb-1">@{reviewer.username}</div>
+                              {reviewer.bio && (
+                                <div className="text-sm text-gray-600 mb-2 text-center">{reviewer.bio}</div>
+                              )}
                               <button
                                 className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
                                 onClick={() => {

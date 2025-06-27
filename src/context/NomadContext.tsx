@@ -3,6 +3,7 @@ import React, { createContext, useContext, useReducer, ReactNode, useEffect, use
 // Types
 export interface User {
   id: string;
+  name?: string;
   username?: string;
   email?: string;
   avatar: string;

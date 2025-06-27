@@ -8,6 +8,7 @@ import ProfilePage from './pages/ProfilePage';
 import TrustPage from './pages/TrustPage';
 import ConciergePage from './pages/ConciergePage';
 import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUsers } from './slices/userSlice';
 import { setPosts } from './slices/postSlice';
@@ -54,6 +55,7 @@ function App() {
             <Route path="/trust" element={<TrustPage />} />
             <Route path="/concierge" element={<ConciergePage />} />
             <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </main>
         <Footer />
