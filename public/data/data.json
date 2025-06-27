@@ -44,21 +44,21 @@
           "id": "1",
           "reviewerId": "user2",
           "rating": 5,
-          "comment": "Zoe was incredibly helpful with transportation tips in Bali.",
+          "comment": "Zoe gave the best Bahn Mi recs throughout Vietnam... and for cheap",
           "createdAt": "2024-01-12"
         },
         {
           "id": "2",
           "reviewerId": "user3",
           "rating": 4,
-          "comment": "Shared some great photography spots in El Nido.",
+          "comment": "Zoe was incredibly helpful with transportation tips in Bali.",
           "createdAt": "2024-01-08"
         }
       ]
     },
     {
       "id": "user3",
-      "username": "sarah",
+      "username": "jordan",
       "email": "sarah.mitchell@nomadpal.com",
       "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
       "location": "El Nido, Philippines",
@@ -70,7 +70,7 @@
     },
     {
       "id": "user4",
-      "username": "made",
+      "username": "sarah",
       "email": "made.wijaya@nomadpal.com",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       "location": "Bali, Indonesia",

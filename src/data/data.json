@@ -42,14 +42,14 @@
       "reviews": [
         {
           "id": "1",
-          "reviewerId": "user2",
+          "reviewerId": "user3",
           "rating": 5,
           "comment": "Zoe gave the best Bahn Mi recs throughout Vietnam... and for cheap",
           "createdAt": "2024-01-12"
         },
         {
           "id": "2",
-          "reviewerId": "user3",
+          "reviewerId": "user4",
           "rating": 4,
           "comment": "Zoe was incredibly helpful with transportation tips in Bali.",
           "createdAt": "2024-01-08"
