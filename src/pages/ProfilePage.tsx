@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Edit, Star, MapPin, Calendar, Award, MessageCircle, Settings } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import { setUser } from '../slices/userSlice';
 
 const ProfilePage: React.FC = () => {
@@ -255,7 +255,16 @@ const ProfilePage: React.FC = () => {
                 return (
                   <div key={review.id} className={idx !== 0 ? 'pt-4 border-t border-gray-100 mt-4' : ''}>
                     <div className="font-semibold text-gray-800 flex items-center mb-1">
-                      {reviewer ? reviewer.username : <span className="italic text-gray-400">Unknown user</span>}
+                      {reviewer ? (
+                        <Link
+                          to={`/${reviewer.username?.toLowerCase()}`}
+                          className="hover:underline text-blue-700"
+                        >
+                          {reviewer.username}
+                        </Link>
+                      ) : (
+                        <span className="italic text-gray-400">Unknown user</span>
+                      )}
                       <span className="ml-2">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <span key={i} className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
