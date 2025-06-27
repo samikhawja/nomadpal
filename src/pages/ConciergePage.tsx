@@ -131,49 +131,37 @@ const ConciergePage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          AI Travel Concierge
-        </h1>
-        <p className="text-xl text-gray-600">
-          Get personalized recommendations, book services, and plan your perfect trip in {currentLocation}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Chat Interface */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-[600px] flex flex-col">
+    <div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-screen-xl mx-auto w-full px-4 py-4">
+        {/* Chat Area (Center, wider) */}
+        <div className="lg:col-span-8">
+          <div className="flex flex-col bg-white rounded-2xl shadow-md border border-gray-200 p-4 min-h-[90vh]">
             {/* Chat Header */}
-            <div className="p-4 border-b border-gray-200 bg-blue-50 rounded-t-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold">AI</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">NomadPal Assistant</h3>
-                  <p className="text-sm text-gray-600">Online • Ready to help</p>
-                </div>
+            <div className="pb-4 border-b border-gray-100 mb-2 flex items-center space-x-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">AI</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 text-lg">NomadPal Assistant</h3>
+                <p className="text-sm text-gray-500">Online • Ready to help</p>
               </div>
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto space-y-4 mb-2 pr-2">
               {chatHistory.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    className={`max-w-lg px-5 py-3 rounded-xl shadow-sm ${
                       msg.type === 'user'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-100 text-gray-900'
                     }`}
                   >
-                    <p className="text-sm">{msg.content}</p>
+                    <p className="text-base">{msg.content}</p>
                     <p className={`text-xs mt-1 ${
                       msg.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                     }`}>
@@ -182,10 +170,9 @@ const ConciergePage: React.FC = () => {
                   </div>
                 </div>
               ))}
-              
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg">
+                  <div className="bg-gray-100 text-gray-900 px-5 py-3 rounded-xl shadow-sm">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -197,49 +184,71 @@ const ConciergePage: React.FC = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="p-4 border-t border-gray-200">
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                {quickActions.map((action, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setMessage(action.action)}
-                    className="text-left p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-center space-x-2 mb-1">
-                      <div className="text-blue-600">{action.icon}</div>
-                      <span className="font-medium text-sm text-gray-900">{action.title}</span>
-                    </div>
-                    <p className="text-xs text-gray-600">{action.description}</p>
-                  </button>
-                ))}
-              </div>
-
-              {/* Message Input */}
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  placeholder="Ask me anything about your trip..."
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            <div className="grid grid-cols-2 gap-2 mb-2">
+              {quickActions.map((action, index) => (
                 <button
-                  onClick={handleSendMessage}
-                  disabled={!message.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  key={index}
+                  onClick={() => setMessage(action.action)}
+                  className="text-left p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors shadow-sm"
                 >
-                  <Send className="w-4 h-4" />
+                  <div className="flex items-center space-x-2 mb-1">
+                    <div className="text-blue-600">{action.icon}</div>
+                    <span className="font-medium text-base text-gray-900">{action.title}</span>
+                  </div>
+                  <p className="text-xs text-gray-600">{action.description}</p>
                 </button>
-              </div>
+              ))}
+            </div>
+
+            {/* Message Input */}
+            <div className="flex space-x-2 mt-2">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder="Ask me anything about your trip..."
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!message.trim()}
+                className="px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-base"
+              >
+                <Send className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Recommendations Sidebar */}
-        <div className="space-y-6">
+        {/* Right Sidebar: Travel Tips + Recommended Services */}
+        <div className="lg:col-span-4 flex flex-col space-y-6 ml-auto">
+          {/* Travel Tips (moved here, compact) */}
+          <div className="bg-blue-50 rounded-2xl p-4 shadow-sm border border-blue-100 ml-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Travel Tips for {currentLocation}
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li className="flex items-start space-x-2">
+                <span className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Best time to visit: November to May (dry season)</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <span className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Average daily budget: 1500-2500 PHP</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <span className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Book island tours in advance during peak season</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <span className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Bring cash - many places don't accept cards</span>
+              </li>
+            </ul>
+          </div>
           {/* Recommended Services */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Recommended Services
             </h3>
@@ -247,9 +256,9 @@ const ConciergePage: React.FC = () => {
               {recommendedServices.slice(0, 3).map((service: any) => {
                 const provider = users.find((u: any) => u.id === service.providerId);
                 return (
-                  <div key={service.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div key={service.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-gray-50">
                     <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-medium text-gray-900 text-sm">{service.title}</h4>
+                      <h4 className="font-medium text-gray-900 text-base">{service.title}</h4>
                       {service.verified && (
                         <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
                           <span className="text-white text-xs">✓</span>
@@ -271,37 +280,12 @@ const ConciergePage: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <button className="w-full mt-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors">
+                    <button className="w-full mt-3 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
                       Book Now
                     </button>
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* Travel Tips */}
-          <div className="bg-blue-50 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Travel Tips for {currentLocation}
-            </h3>
-            <div className="space-y-3 text-sm text-gray-700">
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Best time to visit: November to May (dry season)</p>
-              </div>
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Average daily budget: 1500-2500 PHP</p>
-              </div>
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Book island tours in advance during peak season</p>
-              </div>
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Bring cash - many places don't accept cards</p>
-              </div>
             </div>
           </div>
         </div>
