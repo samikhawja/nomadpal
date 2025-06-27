@@ -4,7 +4,7 @@
         "id": "user1",
         "username": "sami",
         "email": "Sami@nomadpal.com",
-        "avatar": "data/IMG_3244.JPG",
+        "avatar": "/data/IMG_3244.JPG",
         "location": "Mui Ne, Vietnam",
         "trustRating": 5.0,
         "verified": true,
@@ -42,14 +42,14 @@
       "reviews": [
         {
           "id": "1",
-          "reviewerId": "user2",
+          "reviewerId": "user3",
           "rating": 5,
           "comment": "Zoe gave the best Bahn Mi recs throughout Vietnam... and for cheap",
           "createdAt": "2024-01-12"
         },
         {
           "id": "2",
-          "reviewerId": "user3",
+          "reviewerId": "user4",
           "rating": 4,
           "comment": "Zoe was incredibly helpful with transportation tips in Bali.",
           "createdAt": "2024-01-08"
@@ -58,7 +58,7 @@
     },
     {
       "id": "user3",
-      "username": "jordan",
+      "username": "Jordan",
       "email": "sarah.mitchell@nomadpal.com",
       "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
       "location": "El Nido, Philippines",
@@ -133,6 +133,54 @@
       "currency": "IDR",
       "location": "Bali, Indonesia",
       "rating": 4.8,
+      "verified": true
+    },
+    {
+      "id": "2",
+      "providerId": "user2",
+      "type": "transportation",
+      "title": "Private Van Transfer to Port Barton",
+      "description": "Reliable van service with air conditioning. Daily departures at 8:30 AM.",
+      "price": 500,
+      "currency": "PHP",
+      "location": "El Nido, Philippines",
+      "rating": 4.9,
+      "verified": true
+    },
+    {
+      "id": "3",
+      "providerId": "user4",
+      "type": "activity",
+      "title": "Local Food Tour",
+      "description": "Explore local markets and hidden food spots with a knowledgeable local guide.",
+      "price": 800,
+      "currency": "PHP",
+      "location": "El Nido, Philippines",
+      "rating": 4.7,
+      "verified": true
+    },
+    {
+      "id": "4",
+      "providerId": "user1",
+      "type": "budget",
+      "title": "Budget Planning Session",
+      "description": "Get a personalized budget plan for your trip, including accommodation, food, and activities.",
+      "price": 0,
+      "currency": "USD",
+      "location": "Online",
+      "rating": 4.6,
+      "verified": true
+    },
+    {
+      "id": "5",
+      "providerId": "user2",
+      "type": "travel_buddy",
+      "title": "Find a Travel Buddy",
+      "description": "Connect with other travelers heading to the same destination and share your journey.",
+      "price": 0,
+      "currency": "USD",
+      "location": "Global",
+      "rating": 4.5,
       "verified": true
     }
   ]

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, MapPin, Calendar, DollarSign, Users, Clock, Star } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
@@ -8,6 +8,28 @@ interface ChatMessage {
   type: 'ai' | 'user';
   content: string;
   timestamp: string;
+}
+
+// IMPORTANT: For production, proxy this request through your own backend to keep your OpenAI API key secure!
+
+async function getAIResponse(message: string): Promise<string> {
+  try {
+    const response = await fetch('http://localhost:3001/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message }),
+    });
+    const data = await response.json();
+    if (data.choices && data.choices[0]?.message?.content) {
+      return data.choices[0].message.content;
+    }
+    if (data.error) {
+      return `OpenAI Error: ${data.error}`;
+    }
+    return 'Sorry, I could not generate a response.';
+  } catch (err) {
+    return 'Sorry, there was an error contacting the AI service.';
+  }
 }
 
 const ConciergePage: React.FC = () => {
@@ -22,26 +44,26 @@ const ConciergePage: React.FC = () => {
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [data, setData] = useState<any>(null);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
 
-  // Mock AI responses
-  const aiResponses = {
-    'transport': [
-      'I can help you find transportation options! There are several van services from El Nido to Port Barton. The most reliable is El Nido Transport Co. - they leave daily at 8:30 AM and cost 500 PHP. Would you like me to connect you with a verified driver?',
-      'For getting around El Nido, I recommend renting a motorbike (400 PHP/day) or using tricycles (50-100 PHP per trip). The main attractions are within 15-20 minutes of town.'
-    ],
-    'accommodation': [
-      'Based on your preferences, I recommend Outpost Beach Hostel for budget travelers (800 PHP/night) or Spin Designer Hostel for a social atmosphere (1200 PHP/night). Both have great reviews from our community.',
-      'For a more local experience, I can connect you with verified homestay hosts in the area. They typically cost 600-800 PHP/night and include breakfast.'
-    ],
-    'activities': [
-      'The must-do activities in El Nido are: Island Hopping Tour A (1200 PHP), Nacpan Beach day trip, and Taraw Cliff hike for sunset. I can book any of these with trusted local operators.',
-      'For adventure seekers, I recommend the secret lagoon tour or a private boat charter to explore hidden beaches. Would you like me to check availability?'
-    ],
-    'food': [
-      'The best local restaurants in El Nido are: Trattoria Altrove for pizza, Happiness Beach Bar for sunset drinks, and Artcafe for breakfast. All are highly rated by our community.',
-      'For authentic Filipino food, try the local market or I can recommend some family-run restaurants that aren\'t in the guidebooks.'
-    ]
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setDataLoading(true);
+      setDataError(null);
+      try {
+        const response = await fetch(process.env.PUBLIC_URL + '/data/data.json');
+        const json = await response.json();
+        setData(json);
+      } catch (err) {
+        setDataError('Failed to load data.');
+      } finally {
+        setDataLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -57,37 +79,20 @@ const ConciergePage: React.FC = () => {
     setMessage('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse = generateAIResponse(message);
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: aiResponse,
-        timestamp: new Date().toISOString()
-      };
-      setChatHistory(prev => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1500);
+    // Real AI response
+    const aiResponse = await getAIResponse(message);
+    const aiMessage: ChatMessage = {
+      id: (Date.now() + 1).toString(),
+      type: 'ai',
+      content: aiResponse,
+      timestamp: new Date().toISOString()
+    };
+    setChatHistory(prev => [...prev, aiMessage]);
+    setIsTyping(false);
   };
 
-  const generateAIResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    if (lowerMessage.includes('transport') || lowerMessage.includes('bus') || lowerMessage.includes('van')) {
-      return aiResponses.transport[Math.floor(Math.random() * aiResponses.transport.length)];
-    } else if (lowerMessage.includes('hotel') || lowerMessage.includes('hostel') || lowerMessage.includes('stay')) {
-      return aiResponses.accommodation[Math.floor(Math.random() * aiResponses.accommodation.length)];
-    } else if (lowerMessage.includes('tour') || lowerMessage.includes('activity') || lowerMessage.includes('do')) {
-      return aiResponses.activities[Math.floor(Math.random() * aiResponses.activities.length)];
-    } else if (lowerMessage.includes('food') || lowerMessage.includes('restaurant') || lowerMessage.includes('eat')) {
-      return aiResponses.food[Math.floor(Math.random() * aiResponses.food.length)];
-    } else {
-      return "I'd be happy to help! I can assist with transportation, accommodation, activities, food recommendations, and connecting you with local guides. What specific aspect of your trip would you like help with?";
-    }
-  };
-
-  const quickActions = [
+  // Quick actions can be generated from post types or tags
+  const quickActions = data ? [
     {
       icon: <MapPin className="w-5 h-5" />,
       title: 'Find Transportation',
@@ -112,43 +117,18 @@ const ConciergePage: React.FC = () => {
       description: 'Connect with other travelers',
       action: 'I\'m looking for travel companions'
     }
-  ];
+  ] : [];
 
-  const recommendedServices = [
-    {
-      id: '1',
-      name: 'El Nido Island Hopping Tour A',
-      provider: 'Island Adventures Co.',
-      rating: 4.8,
-      price: 1200,
-      currency: 'PHP',
-      duration: '8 hours',
-      description: 'Visit Big Lagoon, Small Lagoon, Secret Lagoon, and 7 Commando Beach. Includes lunch and snorkeling gear.',
-      verified: true
-    },
-    {
-      id: '2',
-      name: 'Private Van Transfer to Port Barton',
-      provider: 'El Nido Transport Co.',
-      rating: 4.9,
-      price: 500,
-      currency: 'PHP',
-      duration: '2 hours',
-      description: 'Reliable van service with air conditioning. Daily departures at 8:30 AM.',
-      verified: true
-    },
-    {
-      id: '3',
-      name: 'Local Food Tour',
-      provider: 'Made Wijaya',
-      rating: 4.7,
-      price: 800,
-      currency: 'PHP',
-      duration: '3 hours',
-      description: 'Explore local markets and hidden food spots with a knowledgeable local guide.',
-      verified: true
-    }
-  ];
+  // Recommended services from data.json
+  const recommendedServices = data ? data.services : [];
+  const users = data ? data.users : [];
+
+  if (dataLoading) {
+    return <div className="text-center py-20 text-lg text-gray-500">Loading concierge data...</div>;
+  }
+  if (dataError) {
+    return <div className="text-center py-20 text-lg text-red-500">{dataError}</div>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -264,36 +244,39 @@ const ConciergePage: React.FC = () => {
               Recommended Services
             </h3>
             <div className="space-y-4">
-              {recommendedServices.map((service) => (
-                <div key={service.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-medium text-gray-900 text-sm">{service.name}</h4>
-                    {service.verified && (
-                      <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-600 mb-2">{service.provider}</p>
-                  <p className="text-xs text-gray-700 mb-3">{service.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-xs text-gray-600">{service.rating}</span>
-                      <Clock className="w-3 h-3 text-gray-400" />
-                      <span className="text-xs text-gray-600">{service.duration}</span>
+              {recommendedServices.slice(0, 3).map((service: any) => {
+                const provider = users.find((u: any) => u.id === service.providerId);
+                return (
+                  <div key={service.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-medium text-gray-900 text-sm">{service.title}</h4>
+                      {service.verified && (
+                        <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="text-right">
-                      <div className="font-semibold text-gray-900 text-sm">
-                        {service.price} {service.currency}
+                    <p className="text-xs text-gray-600 mb-2">
+                      {provider ? provider.username : service.providerId}
+                    </p>
+                    <p className="text-xs text-gray-700 mb-3">{service.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs text-gray-600">{service.rating}★</span>
+                        <span className="text-xs text-gray-600">{service.location}</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold text-gray-900 text-sm">
+                          {service.price} {service.currency}
+                        </div>
                       </div>
                     </div>
+                    <button className="w-full mt-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors">
+                      Book Now
+                    </button>
                   </div>
-                  <button className="w-full mt-3 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors">
-                    Book Now
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
