@@ -12,7 +12,7 @@ import { NomadProvider } from './context/NomadContext';
 function App() {
   return (
     <NomadProvider>
-      <Router>
+      <Router basename="/nomadpal">
         <div className="App min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
           <Header />
           <main className="flex-1">
