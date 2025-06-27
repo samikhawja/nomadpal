@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Star, MapPin, Calendar, Award, MessageCircle, Settings } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { useNavigate, useParams } from 'react-router-dom';
+import { setUser } from '../slices/userSlice';
 
 const ProfilePage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -10,11 +11,53 @@ const ProfilePage: React.FC = () => {
   const users = useSelector((state: RootState) => state.user.users);
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // If the username in the URL matches the logged-in user, use currentUser
   const user = (currentUser && currentUser.username?.toLowerCase() === username?.toLowerCase())
     ? currentUser
     : users.find(u => u.username?.toLowerCase() === username?.toLowerCase());
+
+  // Modal state for editing profile
+  const [editForm, setEditForm] = useState({
+    username: user ? user.username || '' : '',
+    location: user ? user.location || '' : '',
+    bio: user ? user.bio || '' : ''
+  });
+
+  useEffect(() => {
+    if (user) {
+      setEditForm({
+        username: user.username || '',
+        location: user.location || '',
+        bio: user.bio || ''
+      });
+    }
+  }, [user]);
+
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  };
+
+  const handleEditSave = () => {
+    if (!user) return;
+    dispatch(setUser({
+      ...user,
+      ...editForm,
+      id: user.id,
+      avatar: user.avatar || '',
+    }));
+    setIsEditing(false);
+  };
+
+  const handleEditCancel = () => {
+    setEditForm({
+      username: user ? user.username || '' : '',
+      location: user ? user.location || '' : '',
+      bio: user ? user.bio || '' : ''
+    });
+    setIsEditing(false);
+  };
 
   // Show loading if users are not loaded yet and not the current user
   if (!user && users.length === 0) {
@@ -89,13 +132,15 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
           <div className="flex space-x-2">
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <Edit className="w-4 h-4" />
-              <span>Edit Profile</span>
-            </button>
+            {currentUser && user.username?.toLowerCase() === currentUser.username?.toLowerCase() && (
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Edit Profile</span>
+              </button>
+            )}
             <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               <MessageCircle className="w-4 h-4" />
               <span>Message</span>
@@ -129,6 +174,61 @@ const ProfilePage: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* Edit Profile Modal */}
+        {user && isEditing && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+              <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={editForm.username}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={editForm.location}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                  <textarea
+                    name="bio"
+                    value={editForm.bio}
+                    onChange={handleEditChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={3}
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  onClick={handleEditCancel}
+                  className="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEditSave}
+                  className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -143,7 +243,7 @@ const ProfilePage: React.FC = () => {
                 return (
                   <div key={review.id} className={idx !== 0 ? 'pt-4 border-t border-gray-100 mt-4' : ''}>
                     <div className="font-semibold text-gray-800 flex items-center mb-1">
-                      {reviewer?.username || review.reviewerId}
+                      {reviewer ? reviewer.username : <span className="italic text-gray-400">Unknown user</span>}
                       <span className="ml-2">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <span key={i} className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
@@ -192,9 +292,7 @@ const ProfilePage: React.FC = () => {
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-6 h-6 ${
-                      i < Math.floor(user.trustRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                    }`}
+                    className={`w-6 h-6 ${i < Math.floor(user.trustRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
                   />
                 ))}
               </div>
@@ -228,4 +326,4 @@ const ProfilePage: React.FC = () => {
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;
