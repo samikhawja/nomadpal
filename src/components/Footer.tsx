@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Globe, Shield, Users } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const Footer: React.FC = () => {
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -54,7 +58,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/profile" className="text-gray-300 hover:text-white transition-colors">
+                <Link to={currentUser ? `/${currentUser.username}` : '/signin'} className="text-gray-300 hover:text-white transition-colors">
                   My Profile
                 </Link>
               </li>
