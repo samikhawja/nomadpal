@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { MapPin, User, Bell, Search, Menu, X } from 'lucide-react';
-import { useNomad } from '../context/NomadContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { signOut } from '../slices/userSlice';
 
 const Header: React.FC = () => {
-  const { state, dispatch } = useNomad();
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const currentLocation = useSelector((state: RootState) => state.location.currentLocation) || 'Unknown';
+  const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -68,7 +74,7 @@ const Header: React.FC = () => {
               className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:text-blue-600 transition-colors"
             >
               <MapPin className="w-4 h-4" />
-              <span>{state.currentLocation}</span>
+              <span>{currentLocation}</span>
             </button>
 
             {isLocationOpen && (
@@ -106,22 +112,63 @@ const Header: React.FC = () => {
               <Bell className="w-5 h-5" />
             </button>
             
-            {state.currentUser ? (
-              <Link to="/profile" className="flex items-center space-x-2">
-                <img
-                  src={state.currentUser.avatar}
-                  alt={state.currentUser.name}
-                  className="w-8 h-8 rounded-full"
-                />
-                <span className="hidden md:block text-sm font-medium text-gray-700">
-                  {state.currentUser.name}
-                </span>
-              </Link>
+            {currentUser ? (
+              <div className="flex items-center space-x-2 relative">
+                <button
+                  className="flex items-center space-x-2 focus:outline-none"
+                  onClick={() => setIsUserDropdownOpen((open) => !open)}
+                >
+                  <img
+                    src={process.env.PUBLIC_URL + '/' + currentUser.avatar}
+                    alt={currentUser.username}
+                    className="w-8 h-8 rounded-full"
+                    onError={e => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${currentUser.username}`; }}
+                  />
+                  <span className="hidden md:block text-sm font-medium text-gray-700">
+                    {currentUser.username}
+                  </span>
+                </button>
+                {isUserDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                    <div className="py-1">
+                      <button
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => {
+                          setIsUserDropdownOpen(false);
+                          navigate(`/${currentUser.username}`);
+                        }}
+                      >
+                        Profile
+                      </button>
+                      <button
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => {
+                          setIsUserDropdownOpen(false);
+                          // Placeholder for settings
+                          alert('Settings page coming soon!');
+                        }}
+                      >
+                        Settings
+                      </button>
+                      <button
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onClick={() => {
+                          setIsUserDropdownOpen(false);
+                          dispatch(signOut());
+                          navigate('/');
+                        }}
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
-              <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              <Link to="/signin" className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
                 <User className="w-4 h-4" />
                 <span className="text-sm font-medium">Sign In</span>
-              </button>
+              </Link>
             )}
 
             {/* Mobile menu button */}
@@ -157,7 +204,7 @@ const Header: React.FC = () => {
               <div className="px-3 py-2">
                 <div className="text-sm font-medium text-gray-500 mb-2">Location</div>
                 <select
-                  value={state.currentLocation}
+                  value={currentLocation}
                   onChange={(e) => handleLocationChange(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                 >

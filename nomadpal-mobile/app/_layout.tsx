@@ -42,7 +42,11 @@ export default function RootLayout() {
 
   return (
     <NomadProvider>
-      <Stack />
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="signin" options={{ title: 'Sign In', headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      </Stack>
     </NomadProvider>
   );
 }

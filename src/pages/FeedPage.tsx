@@ -1,10 +1,36 @@
 import React, { useState } from 'react';
 import { Plus, Filter, MessageCircle, ThumbsUp, ThumbsDown, MapPin, User, Clock } from 'lucide-react';
-import { useNomad } from '../context/NomadContext';
-import { Post } from '../context/NomadContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+// import { setPosts, addPost, updatePost, addReply } from '../slices/postSlice';
+
+type Reply = {
+  id: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+  helpful: boolean;
+};
+
+type Post = {
+  id: string;
+  userId: string;
+  type: 'question' | 'offer' | 'request' | 'review';
+  title: string;
+  content: string;
+  location: string;
+  tags: string[];
+  createdAt: string;
+  replies: Reply[];
+  upvotes: number;
+  downvotes: number;
+};
 
 const FeedPage: React.FC = () => {
-  const { state, dispatch } = useNomad();
+  const posts = useSelector((state: RootState) => state.post.posts);
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const currentLocation = useSelector((state: RootState) => state.location.currentLocation);
+  const dispatch = useDispatch();
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [showPostForm, setShowPostForm] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -93,7 +119,7 @@ const FeedPage: React.FC = () => {
       type: newPost.type,
       title: newPost.title,
       content: newPost.content,
-      location: state.currentLocation,
+      location: currentLocation,
       tags: newPost.tags.split(',').map(tag => tag.trim()),
       createdAt: new Date().toISOString(),
       replies: [],
@@ -143,7 +169,7 @@ const FeedPage: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Travel Feed</h1>
-          <p className="text-gray-600 mt-1">Connect with travelers in {state.currentLocation}</p>
+          <p className="text-gray-600 mt-1">Connect with travelers in {currentLocation}</p>
         </div>
         <button
           onClick={() => setShowPostForm(true)}
@@ -329,7 +355,7 @@ const FeedPage: React.FC = () => {
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <h4 className="font-medium text-gray-900 mb-3">Replies</h4>
                 <div className="space-y-3">
-                  {post.replies.map((reply) => (
+                  {post.replies.map((reply: Reply) => (
                     <div key={reply.id} className="bg-gray-50 rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">

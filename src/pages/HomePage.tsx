@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Users, Shield, Zap, MessageCircle, ArrowRight, Globe } from 'lucide-react';
-import { useNomad } from '../context/NomadContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const HomePage: React.FC = () => {
-  const { state } = useNomad();
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const currentLocation = useSelector((state: RootState) => state.location.currentLocation);
 
   const features = [
     {
@@ -118,7 +120,7 @@ const HomePage: React.FC = () => {
           <div className="flex items-center justify-center space-x-2 text-gray-600">
             <MapPin className="w-5 h-5" />
             <span className="font-medium">Currently exploring:</span>
-            <span className="font-bold text-blue-600">{state.currentLocation}</span>
+            <span className="font-bold text-blue-600">{currentLocation}</span>
           </div>
         </div>
       </section>

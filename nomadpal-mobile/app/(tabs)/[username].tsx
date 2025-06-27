@@ -1,31 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNomad } from '../context/NomadContext';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
-export default function ProfileScreen() {
+export default function DynamicProfileScreen() {
   const { state, dispatch } = useNomad();
   const router = useRouter();
+  const { username } = useLocalSearchParams();
+  const [avatarError, setAvatarError] = useState(false);
+
+  const user = state.users.find(u => u.name.toLowerCase() === String(username).toLowerCase());
 
   useEffect(() => {
-    if (!state.currentUser) {
-      router.replace('/signin');
+    if (!user) {
+      // Optionally, redirect or show not found
     }
-  }, [state.currentUser]);
+  }, [user]);
 
-  if (!state.currentUser) return null;
-  const user = state.currentUser;
-
-  const handleSignOut = () => {
-    dispatch({ type: 'SET_USER', payload: null });
-    router.replace('/signin');
-  };
+  if (!user) {
+    return (
+      <View style={styles.container}><Text style={styles.notFound}>User not found</Text></View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Image source={{ uri: user.avatar }} style={styles.avatar} />
+        <Image
+          source={avatarError ? { uri: `https://ui-avatars.com/api/?name=${user.name}` } : { uri: user.avatar }}
+          style={styles.avatar}
+          onError={() => setAvatarError(true)}
+        />
         <View style={{ alignItems: 'center' }}>
           <Text style={styles.name}>{user.name}</Text>
           <View style={styles.row}>
@@ -46,22 +52,22 @@ export default function ProfileScreen() {
         ))}
       </View>
       <Text style={styles.sectionTitle}>Recent Reviews</Text>
-      {Array.isArray(user.reviews) && user.reviews.map((r: any) => (
-        <View key={r.id} style={styles.reviewCard}>
-          <View style={styles.row}>
-            <Text style={styles.reviewer}>{r.reviewer || r.reviewerId}</Text>
+      {Array.isArray(user.reviews) && user.reviews.map((r: any, idx: number) => {
+        const reviewer = state.users.find(u => u.id === r.reviewerId);
+        return (
+          <View key={r.id} style={styles.reviewCard}>
             <View style={styles.row}>
-              {[...Array(5)].map((_, i) => (
-                <Ionicons key={i} name="star" size={14} color={i < r.rating ? '#fbbf24' : '#e5e7eb'} />
-              ))}
+              <Text style={styles.reviewer}>{reviewer?.name || r.reviewerId}</Text>
+              <View style={styles.row}>
+                {[...Array(5)].map((_, i) => (
+                  <Ionicons key={i} name="star" size={14} color={i < r.rating ? '#fbbf24' : '#e5e7eb'} />
+                ))}
+              </View>
             </View>
+            <Text style={styles.reviewComment}>{r.comment}</Text>
           </View>
-          <Text style={styles.reviewComment}>{r.comment}</Text>
-        </View>
-      ))}
-      <TouchableOpacity style={styles.signOutBtn} onPress={handleSignOut}>
-        <Text style={styles.signOutText}>Sign Out</Text>
-      </TouchableOpacity>
+        );
+      })}
     </ScrollView>
   );
 }
@@ -82,6 +88,5 @@ const styles = StyleSheet.create({
   reviewCard: { backgroundColor: '#fff', borderRadius: 10, padding: 12, marginBottom: 10, elevation: 1 },
   reviewer: { fontWeight: 'bold', color: '#2563eb', marginRight: 8 },
   reviewComment: { color: '#334155', marginTop: 4 },
-  signOutBtn: { backgroundColor: '#ef4444', padding: 12, borderRadius: 8, alignItems: 'center', marginTop: 24 },
-  signOutText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  notFound: { color: '#ef4444', fontSize: 18, textAlign: 'center', marginTop: 40 },
 }); 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Types
 export interface User {
@@ -10,6 +11,8 @@ export interface User {
   verified: boolean;
   memberSince: string;
   reviews: Review[];
+  badges?: string[];
+  bio?: string;
 }
 
 export interface Post {
@@ -64,7 +67,8 @@ interface NomadState {
 }
 
 type NomadAction =
-  | { type: 'SET_USER'; payload: User }
+  | { type: 'SET_USER'; payload: User | null }
+  | { type: 'SET_USERS'; payload: User[] }
   | { type: 'ADD_POST'; payload: Post }
   | { type: 'UPDATE_POST'; payload: Post }
   | { type: 'ADD_REPLY'; payload: { postId: string; reply: Reply } }
@@ -84,6 +88,8 @@ const nomadReducer = (state: NomadState, action: NomadAction): NomadState => {
   switch (action.type) {
     case 'SET_USER':
       return { ...state, currentUser: action.payload };
+    case 'SET_USERS':
+      return { ...state, users: action.payload };
     case 'ADD_POST':
       return { ...state, posts: [action.payload, ...state.posts] };
     case 'UPDATE_POST':
@@ -144,15 +150,35 @@ export const NomadProvider: React.FC<NomadProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(nomadReducer, initialState);
   const [loading, setLoading] = useState(true);
 
+  // Rehydrate currentUser from AsyncStorage on mount
+  useEffect(() => {
+    const loadPersistedUser = async () => {
+      const savedUser = await AsyncStorage.getItem('currentUser');
+      if (savedUser) {
+        dispatch({ type: 'SET_USER', payload: JSON.parse(savedUser) });
+      }
+    };
+    loadPersistedUser();
+  }, []);
+
+  // Persist currentUser to AsyncStorage whenever it changes
+  useEffect(() => {
+    if (state.currentUser) {
+      AsyncStorage.setItem('currentUser', JSON.stringify(state.currentUser));
+    } else {
+      AsyncStorage.removeItem('currentUser');
+    }
+  }, [state.currentUser]);
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const response = await fetch(require('../data/data.json'));
         const data = await response.json();
-        dispatch({ type: 'SET_USER', payload: data.users[0] });
+        // Only set users, posts, services, location; don't overwrite currentUser
+        dispatch({ type: 'SET_USERS', payload: data.users });
         data.posts.forEach((post: Post) => dispatch({ type: 'ADD_POST', payload: post }));
         data.services.forEach((service: Service) => dispatch({ type: 'ADD_SERVICE', payload: service }));
-        // Optionally set location
         dispatch({ type: 'SET_LOCATION', payload: data.users[0]?.location || 'El Nido, Philippines' });
       } catch (e) {
         // handle error

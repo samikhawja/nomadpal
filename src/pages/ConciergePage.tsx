@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Send, MapPin, Calendar, DollarSign, Users, Clock, Star } from 'lucide-react';
-import { useNomad } from '../context/NomadContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 interface ChatMessage {
   id: string;
@@ -10,13 +11,13 @@ interface ChatMessage {
 }
 
 const ConciergePage: React.FC = () => {
-  const { state } = useNomad();
+  const currentLocation = useSelector((state: RootState) => state.location.currentLocation);
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     {
       id: '1',
       type: 'ai',
-      content: `Hi! I'm your NomadPal AI concierge. I can help you plan your trip in ${state.currentLocation}, find local guides, book transportation, and answer any travel questions. What would you like to know?`,
+      content: `Hi! I'm your NomadPal AI concierge. I can help you plan your trip in ${currentLocation}, find local guides, book transportation, and answer any travel questions. What would you like to know?`,
       timestamp: new Date().toISOString()
     }
   ]);
@@ -157,7 +158,7 @@ const ConciergePage: React.FC = () => {
           AI Travel Concierge
         </h1>
         <p className="text-xl text-gray-600">
-          Get personalized recommendations, book services, and plan your perfect trip in {state.currentLocation}
+          Get personalized recommendations, book services, and plan your perfect trip in {currentLocation}
         </p>
       </div>
 
@@ -299,7 +300,7 @@ const ConciergePage: React.FC = () => {
           {/* Travel Tips */}
           <div className="bg-blue-50 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Travel Tips for {state.currentLocation}
+              Travel Tips for {currentLocation}
             </h3>
             <div className="space-y-3 text-sm text-gray-700">
               <div className="flex items-start space-x-2">

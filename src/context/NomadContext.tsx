@@ -3,13 +3,17 @@ import React, { createContext, useContext, useReducer, ReactNode, useEffect, use
 // Types
 export interface User {
   id: string;
-  name: string;
+  username?: string;
+  email?: string;
   avatar: string;
   location: string;
   trustRating: number;
   verified: boolean;
   memberSince: string;
   reviews: Review[];
+  password?: string;
+  badges?: string[];
+  bio?: string;
 }
 
 export interface Post {
@@ -64,7 +68,8 @@ interface NomadState {
 }
 
 type NomadAction =
-  | { type: 'SET_USER'; payload: User }
+  | { type: 'SET_USER'; payload: User | null }
+  | { type: 'SET_USERS'; payload: User[] }
   | { type: 'ADD_POST'; payload: Post }
   | { type: 'UPDATE_POST'; payload: Post }
   | { type: 'ADD_REPLY'; payload: { postId: string; reply: Reply } }
@@ -83,7 +88,9 @@ const initialState: NomadState = {
 const nomadReducer = (state: NomadState, action: NomadAction): NomadState => {
   switch (action.type) {
     case 'SET_USER':
-      return { ...state, currentUser: action.payload };
+      return { ...state, currentUser: action.payload || null };
+    case 'SET_USERS':
+      return { ...state, users: action.payload };
     case 'ADD_POST':
       return { ...state, posts: [action.payload, ...state.posts] };
     case 'UPDATE_POST':
@@ -150,6 +157,7 @@ export const NomadProvider: React.FC<NomadProviderProps> = ({ children }) => {
         const response = await fetch(process.env.PUBLIC_URL + '/data/data.json');
         const data = await response.json();
         dispatch({ type: 'SET_USER', payload: data.users[0] });
+        dispatch({ type: 'SET_USERS', payload: data.users });
         data.posts.forEach((post: Post) => dispatch({ type: 'ADD_POST', payload: post }));
         data.services.forEach((service: Service) => dispatch({ type: 'ADD_SERVICE', payload: service }));
         dispatch({ type: 'SET_LOCATION', payload: data.users[0]?.location || 'El Nido, Philippines' });
