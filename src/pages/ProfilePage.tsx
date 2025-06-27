@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Edit, Star, MapPin, Calendar, Award, MessageCircle, Settings } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
@@ -13,6 +13,8 @@ const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const [hoveredReviewerId, setHoveredReviewerId] = useState<string | null>(null);
+  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // If the username in the URL matches the logged-in user, use currentUser
   const user = (currentUser && currentUser.username?.toLowerCase() === username?.toLowerCase())
@@ -254,14 +256,58 @@ const ProfilePage: React.FC = () => {
                 const reviewer = users.find(u => u.id === review.reviewerId);
                 return (
                   <div key={review.id} className={idx !== 0 ? 'pt-4 border-t border-gray-100 mt-4' : ''}>
-                    <div className="font-semibold text-gray-800 flex items-center mb-1">
+                    <div className="font-semibold text-gray-800 flex items-center mb-1 relative group">
                       {reviewer ? (
-                        <Link
-                          to={`/${reviewer.username?.toLowerCase()}`}
-                          className="hover:underline text-blue-700"
-                        >
-                          {reviewer.username}
-                        </Link>
+                        <>
+                          <Link
+                            to={`/${reviewer.username?.toLowerCase()}`}
+                            className="hover:underline text-blue-700"
+                            onMouseEnter={() => {
+                              if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+                              hoverTimeout.current = setTimeout(() => setHoveredReviewerId(review.reviewerId), 500);
+                            }}
+                            onMouseLeave={() => {
+                              if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+                              setHoveredReviewerId(null);
+                            }}
+                          >
+                            {reviewer.username}
+                          </Link>
+                          {hoveredReviewerId === review.reviewerId && (
+                            <div
+                              className="absolute bottom-full left-0 mb-2 z-50 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-4 animate-fade-in flex flex-col items-center"
+                              onMouseEnter={() => {
+                                if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+                                setHoveredReviewerId(review.reviewerId);
+                              }}
+                              onMouseLeave={() => {
+                                if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+                                setHoveredReviewerId(null);
+                              }}
+                            >
+                              <img
+                                src={process.env.PUBLIC_URL + '/' + reviewer.avatar}
+                                alt={reviewer.username}
+                                className="w-16 h-16 rounded-full object-cover mb-2"
+                                onError={e => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${reviewer.username}`; }}
+                              />
+                              <div className="font-bold text-gray-900 mb-1">{reviewer.username}</div>
+                              {reviewer.bio && <div className="text-sm text-gray-600 mb-2 text-center">{reviewer.bio}</div>}
+                              <button
+                                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                                onClick={() => {
+                                  if (!currentUser) {
+                                    navigate('/signin', { state: { from: location.pathname } });
+                                  } else {
+                                    // Future: open chat modal
+                                  }
+                                }}
+                              >
+                                Message
+                              </button>
+                            </div>
+                          )}
+                        </>
                       ) : (
                         <span className="italic text-gray-400">Unknown user</span>
                       )}
