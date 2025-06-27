@@ -1,0 +1,104 @@
+{
+  "users": [
+    {
+      "id": "user1",
+      "name": "Alex Johnson",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      "location": "El Nido, Philippines",
+      "trustRating": 4.6,
+      "verified": true,
+      "memberSince": "2023-06-15",
+      "reviews": [
+        {
+          "id": "1",
+          "reviewerId": "user2",
+          "rating": 5,
+          "comment": "Alex was incredibly helpful with transportation tips in Bali.",
+          "createdAt": "2024-01-12"
+        },
+        {
+          "id": "2",
+          "reviewerId": "user3",
+          "rating": 4,
+          "comment": "Shared some great photography spots in El Nido.",
+          "createdAt": "2024-01-08"
+        }
+      ]
+    },
+    {
+      "id": "user2",
+      "name": "Sarah Mitchell",
+      "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      "location": "El Nido, Philippines",
+      "trustRating": 4.9,
+      "verified": true,
+      "memberSince": "2023-03-15",
+      "reviews": []
+    },
+    {
+      "id": "user3",
+      "name": "Made Wijaya",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      "location": "Bali, Indonesia",
+      "trustRating": 4.8,
+      "verified": true,
+      "memberSince": "2022-11-20",
+      "reviews": []
+    }
+  ],
+  "posts": [
+    {
+      "id": "1",
+      "userId": "user1",
+      "type": "question",
+      "title": "Looking for van ride to Port Barton",
+      "content": "Anyone going tomorrow?",
+      "location": "El Nido, Philippines",
+      "tags": ["transport"],
+      "createdAt": "2024-01-15T10:30:00Z",
+      "replies": [],
+      "upvotes": 3,
+      "downvotes": 0
+    },
+    {
+      "id": "2",
+      "userId": "user2",
+      "type": "offer",
+      "title": "Sunrise hike guide in Bali",
+      "content": "Local guide available for sunrise hikes.",
+      "location": "Bali, Indonesia",
+      "tags": ["hiking"],
+      "createdAt": "2024-01-15T08:15:00Z",
+      "replies": [],
+      "upvotes": 5,
+      "downvotes": 0
+    },
+    {
+      "id": "3",
+      "userId": "user3",
+      "type": "request",
+      "title": "Need help with border crossing",
+      "content": "Anyone crossed Cambodia-Vietnam border recently?",
+      "location": "Siem Reap, Cambodia",
+      "tags": ["border"],
+      "createdAt": "2024-01-15T06:45:00Z",
+      "replies": [],
+      "upvotes": 2,
+      "downvotes": 0
+    }
+  ],
+  "services": [
+    {
+      "id": "1",
+      "providerId": "user3",
+      "type": "guide",
+      "title": "Sunrise Hike Guide",
+      "description": "Experienced local guide offering sunrise hikes to Mount Batur.",
+      "price": 350000,
+      "currency": "IDR",
+      "location": "Bali, Indonesia",
+      "rating": 4.8,
+      "verified": true
+    }
+  ]
+} 

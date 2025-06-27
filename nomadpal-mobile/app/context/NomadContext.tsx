@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect, useState } from 'react';
 
 // Types
 export interface User {
@@ -77,7 +77,7 @@ const initialState: NomadState = {
   posts: [],
   services: [],
   users: [],
-  currentLocation: 'El Nido, Philippines'
+  currentLocation: 'El Nido, Philippines',
 };
 
 const nomadReducer = (state: NomadState, action: NomadAction): NomadState => {
@@ -123,6 +123,7 @@ const nomadReducer = (state: NomadState, action: NomadAction): NomadState => {
 interface NomadContextType {
   state: NomadState;
   dispatch: React.Dispatch<NomadAction>;
+  loading: boolean;
 }
 
 const NomadContext = createContext<NomadContextType | undefined>(undefined);
@@ -141,9 +142,29 @@ interface NomadProviderProps {
 
 export const NomadProvider: React.FC<NomadProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(nomadReducer, initialState);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch(require('../data/data.json'));
+        const data = await response.json();
+        dispatch({ type: 'SET_USER', payload: data.users[0] });
+        data.posts.forEach((post: Post) => dispatch({ type: 'ADD_POST', payload: post }));
+        data.services.forEach((service: Service) => dispatch({ type: 'ADD_SERVICE', payload: service }));
+        // Optionally set location
+        dispatch({ type: 'SET_LOCATION', payload: data.users[0]?.location || 'El Nido, Philippines' });
+      } catch (e) {
+        // handle error
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
   return (
-    <NomadContext.Provider value={{ state, dispatch }}>
+    <NomadContext.Provider value={{ state, dispatch, loading }}>
       {children}
     </NomadContext.Provider>
   );
